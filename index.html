@@ -437,10 +437,10 @@ body {
 <nav class="nav">
   <div class="nav-brand">Fatima's <span>Cleaning</span></div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('job', this)">New Job</button>
-    <button class="nav-tab" onclick="showPage('estimate', this)">Estimate</button>
-    <button class="nav-tab" onclick="showPage('records', this)">Records</button>
-    <button class="nav-tab" onclick="showPage('hours', this)">Hours</button>
+    <button class="nav-tab active" data-page="job">New Job</button>
+    <button class="nav-tab" data-page="estimate">Estimate</button>
+    <button class="nav-tab" data-page="records">Records</button>
+    <button class="nav-tab" data-page="hours">Hours</button>
   </div>
 </nav>
 
@@ -972,6 +972,12 @@ function showPage(page, el) {
   if (page === 'hours') renderHours();
   if (page === 'estimate') updateEstRooms();
 }
+
+document.querySelectorAll('.nav-tab').forEach(btn => {
+  btn.addEventListener('click', function() {
+    showPage(this.dataset.page, this);
+  });
+});
 
 // ── HOURS ──
 function fmtHours(h) {

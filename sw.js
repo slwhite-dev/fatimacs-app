@@ -1,4 +1,4 @@
-const CACHE = 'fatimas-v2';
+const CACHE = 'fatimas-v3';
 const ASSETS = [
   './',
   './index.html',
