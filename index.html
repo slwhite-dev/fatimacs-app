@@ -437,10 +437,10 @@ body {
 <nav class="nav">
   <div class="nav-brand">Fatima's <span>Cleaning</span></div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('job')">New Job</button>
-    <button class="nav-tab" onclick="showPage('estimate')">Estimate</button>
-    <button class="nav-tab" onclick="showPage('records')">Records</button>
-    <button class="nav-tab" onclick="showPage('hours')">Hours</button>
+    <button class="nav-tab active" onclick="showPage('job', this)">New Job</button>
+    <button class="nav-tab" onclick="showPage('estimate', this)">Estimate</button>
+    <button class="nav-tab" onclick="showPage('records', this)">Records</button>
+    <button class="nav-tab" onclick="showPage('hours', this)">Hours</button>
   </div>
 </nav>
 
@@ -963,11 +963,11 @@ function deleteRecord(id, e) {
 }
 
 // ── PAGE SWITCHING ──
-function showPage(page) {
+function showPage(page, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
-  event.target.classList.add('active');
+  if (el) el.classList.add('active');
   if (page === 'records') renderRecords();
   if (page === 'hours') renderHours();
   if (page === 'estimate') updateEstRooms();
