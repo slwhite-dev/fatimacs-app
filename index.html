@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Fatima's Cleaning — Job Sheet</title>
+<meta name="description" content="Fatima's Cleaning job sheets, estimates, and staff hours tracker">
+<meta name="theme-color" content="#1B4332">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fatima's Cleaning">
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-900: #1B4332;
+  --green-800: #1E5740;
+  --green-700: #2D6A4F;
+  --green-600: #40916C;
+  --green-400: #74C69D;
+  --green-200: #B7E4C7;
+  --green-100: #D8F3DC;
+  --green-50:  #F0FBF3;
+  --gold:      #C8963A;
+  --gold-light:#FFF8EC;
+  --red:       #C0392B;
+  --red-light: #FDECEA;
+  --gray-900:  #1A1A1A;
+  --gray-700:  #3D3D3D;
+  --gray-500:  #6B6B6B;
+  --gray-300:  #C4C4C4;
+  --gray-100:  #F5F5F5;
+  --white:     #FFFFFF;
+  --radius:    10px;
+  --radius-sm: 6px;
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  font-family: var(--font);
+  background: var(--gray-100);
+  color: var(--gray-900);
+  min-height: 100vh;
+}
+
+/* ── NAV ── */
+.nav {
+  background: var(--green-900);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-brand { color: #fff; font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
+.nav-brand span { color: var(--green-400); }
+.nav-tabs { display: flex; gap: 4px; }
+.nav-tab {
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--green-400);
+  border: none;
+  background: transparent;
+  font-family: var(--font);
+  transition: all 0.15s;
+}
+.nav-tab.active { background: var(--green-700); color: #fff; }
+.nav-tab:hover:not(.active) { background: var(--green-800); }
+
+/* ── PAGES ── */
+.page { display: none; padding: 20px; max-width: 700px; margin: 0 auto; }
+.page.active { display: block; }
+
+/* ── JOB FORM PAGE ── */
+.job-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--gray-300);
+  margin-bottom: 16px;
+}
+.job-card-header {
+  background: var(--green-900);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.job-card-title { color: #fff; font-size: 14px; font-weight: 600; }
+.job-card-sub { color: var(--green-400); font-size: 12px; font-family: var(--mono); }
+.job-fields {
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.job-fields .full { grid-column: 1 / -1; }
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 5px;
+}
+.field input, .field select {
+  width: 100%;
+  padding: 8px 11px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font);
+  color: var(--gray-900);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.field input:focus, .field select:focus { border-color: var(--green-600); box-shadow: 0 0 0 3px var(--green-100); }
+
+/* ── PROGRESS BAR ── */
+.progress-wrap {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-300);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.progress-label { font-size: 13px; font-weight: 600; color: var(--green-700); white-space: nowrap; }
+.progress-bar-bg { flex: 1; height: 8px; background: var(--gray-100); border-radius: 4px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: var(--green-600); border-radius: 4px; transition: width 0.3s ease; }
+.progress-pct { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--green-700); min-width: 72px; text-align: right; }
+
+/* ── TASK SECTIONS ── */
+.section-wrap { margin-bottom: 12px; background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); overflow: hidden; }
+.section-head {
+  padding: 10px 18px;
+  background: var(--green-50);
+  border-bottom: 1px solid var(--green-100);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+.section-head-left { display: flex; align-items: center; gap: 8px; }
+.section-icon { font-size: 15px; }
+.section-name { font-size: 13px; font-weight: 600; color: var(--green-800); }
+.section-right { display: flex; align-items: center; gap: 10px; }
+.section-count { font-size: 11px; font-family: var(--mono); color: var(--green-600); background: var(--green-100); padding: 2px 8px; border-radius: 20px; }
+.section-chevron { font-size: 12px; color: var(--green-600); transition: transform 0.2s; }
+.section-head.collapsed .section-chevron { transform: rotate(-90deg); }
+.section-tasks { }
+.section-tasks.hidden { display: none; }
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 18px;
+  border-bottom: 1px solid var(--gray-100);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.task-row:last-child { border-bottom: none; }
+.task-row:hover { background: var(--gray-100); }
+.task-row.done { background: var(--green-50); }
+.task-cb {
+  width: 20px; height: 20px; min-width: 20px;
+  border-radius: 5px;
+  border: 1.5px solid var(--gray-300);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  background: var(--white);
+}
+.task-row.done .task-cb { background: var(--green-600); border-color: var(--green-600); }
+.task-cb svg { display: none; }
+.task-row.done .task-cb svg { display: block; }
+.task-label { font-size: 13px; color: var(--gray-700); line-height: 1.4; flex: 1; }
+.task-row.done .task-label { text-decoration: line-through; color: var(--gray-300); }
+.task-time { font-size: 11px; font-family: var(--mono); color: var(--green-600); white-space: nowrap; }
+
+/* ── SIGN-OFF PANEL ── */
+.signoff-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-300);
+  overflow: hidden;
+  margin-top: 16px;
+}
+.signoff-header {
+  background: var(--green-900);
+  padding: 14px 18px;
+}
+.signoff-title { color: #fff; font-size: 14px; font-weight: 600; }
+.signoff-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.sig-wrap { display: flex; flex-direction: column; gap: 5px; }
+.sig-wrap label { font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.6px; }
+.sig-container { position: relative; border: 1px solid var(--gray-300); border-radius: var(--radius-sm); background: #FAFAFA; overflow: hidden; }
+#sigpad { display: block; width: 100%; height: 100px; cursor: crosshair; touch-action: none; }
+.sig-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 13px; color: var(--gray-300); pointer-events: none; font-style: italic; }
+.sig-clear-btn {
+  position: absolute; top: 7px; right: 8px;
+  font-size: 11px; padding: 3px 10px;
+  border: 1px solid var(--gray-300); border-radius: 4px;
+  background: var(--white); color: var(--gray-500);
+  cursor: pointer; font-family: var(--font);
+}
+.sig-clear-btn:hover { color: var(--gray-900); border-color: var(--gray-500); }
+.warning-box {
+  background: var(--red-light);
+  border: 1px solid #F1948A;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--red);
+  display: none;
+}
+.warning-box.show { display: block; }
+.submit-btn {
+  padding: 12px;
+  background: var(--green-700);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.15s;
+  letter-spacing: 0.2px;
+}
+.submit-btn:hover { background: var(--green-900); }
+.success-box {
+  background: var(--green-50);
+  border: 1px solid var(--green-200);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  display: none;
+}
+.success-box.show { display: block; }
+.success-check {
+  width: 48px; height: 48px; background: var(--green-600); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 10px;
+}
+.success-heading { font-size: 16px; font-weight: 600; color: var(--green-800); margin-bottom: 4px; }
+.success-meta { font-size: 12px; color: var(--green-600); margin-bottom: 12px; font-family: var(--mono); }
+.approved-stamp {
+  display: inline-block; padding: 5px 18px;
+  border: 2px solid var(--green-600); border-radius: 4px;
+  font-size: 12px; font-weight: 700; color: var(--green-700);
+  letter-spacing: 2px; font-family: var(--mono);
+  margin-bottom: 14px;
+}
+.new-job-btn {
+  padding: 9px 20px; background: transparent; border: 1px solid var(--green-600);
+  color: var(--green-700); border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; font-family: var(--font);
+  cursor: pointer; transition: all 0.15s;
+}
+.new-job-btn:hover { background: var(--green-100); }
+
+/* ── RECORDS PAGE ── */
+.records-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.records-title { font-size: 18px; font-weight: 600; color: var(--gray-900); }
+.records-count { font-size: 12px; font-family: var(--mono); color: var(--gray-500); background: var(--white); padding: 4px 12px; border-radius: 20px; border: 1px solid var(--gray-300); }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--gray-500); }
+.empty-icon { font-size: 40px; margin-bottom: 10px; }
+.empty-text { font-size: 14px; }
+.record-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-300);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.record-header {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--gray-100);
+  cursor: pointer;
+}
+.record-left { display: flex; flex-direction: column; gap: 3px; }
+.record-addr { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+.record-meta { font-size: 12px; font-family: var(--mono); color: var(--gray-500); }
+.record-right { display: flex; align-items: center; gap: 8px; }
+.badge-approved {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  color: var(--green-700); background: var(--green-100);
+  padding: 3px 10px; border-radius: 20px; font-family: var(--mono);
+}
+.record-chevron { font-size: 12px; color: var(--gray-300); transition: transform 0.2s; }
+.record-detail { padding: 14px 16px; display: none; border-top: 1px solid var(--gray-100); }
+.record-detail.open { display: block; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.detail-item label { font-size: 10px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.6px; display: block; margin-bottom: 2px; }
+.detail-item span { font-size: 13px; color: var(--gray-900); font-weight: 500; }
+.task-summary { margin-top: 10px; }
+.task-summary-title { font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
+.task-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.task-chip {
+  font-size: 11px; padding: 3px 9px;
+  background: var(--green-50); color: var(--green-700);
+  border-radius: 20px; border: 1px solid var(--green-200);
+}
+.sig-img { margin-top: 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); overflow: hidden; }
+.sig-img img { display: block; max-width: 100%; height: auto; }
+.delete-btn {
+  margin-top: 12px; padding: 6px 14px;
+  background: transparent; border: 1px solid #F1948A;
+  color: var(--red); border-radius: var(--radius-sm);
+  font-size: 12px; font-family: var(--font); cursor: pointer;
+}
+.delete-btn:hover { background: var(--red-light); }
+
+.metric-card {
+  background: var(--gray-100);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.metric-label { font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+.metric-value { font-size: 24px; font-weight: 600; color: var(--green-800); font-family: var(--mono); }
+.metric-sub { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+.staff-section { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); margin-bottom: 14px; overflow: hidden; }
+.staff-section-header { padding: 12px 16px; background: var(--green-50); border-bottom: 1px solid var(--green-100); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+.staff-section-name { font-size: 14px; font-weight: 600; color: var(--green-800); }
+.staff-section-meta { font-size: 12px; font-family: var(--mono); color: var(--green-600); }
+.hours-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--gray-100); }
+.hours-row:last-child { border-bottom: none; }
+.hours-date { font-size: 12px; font-family: var(--mono); color: var(--gray-500); min-width: 90px; }
+.hours-addr { font-size: 13px; color: var(--gray-700); flex: 1; }
+.hours-type { font-size: 11px; color: var(--green-600); background: var(--green-50); padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+.hours-duration { font-size: 13px; font-weight: 600; font-family: var(--mono); color: var(--green-800); min-width: 52px; text-align: right; }
+.hours-times { font-size: 11px; color: var(--gray-500); font-family: var(--mono); white-space: nowrap; }
+
+/* ── ESTIMATE PAGE ── */
+.est-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); margin-bottom: 14px; overflow: hidden; }
+.est-card-header { background: var(--green-900); padding: 13px 18px; display: flex; align-items: center; justify-content: space-between; }
+.est-card-title { color: #fff; font-size: 14px; font-weight: 600; }
+.est-card-body { padding: 16px 18px; }
+.room-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+.room-item { border: 1px solid var(--gray-300); border-radius: var(--radius-sm); padding: 10px 12px; cursor: pointer; transition: all 0.15s; user-select: none; }
+.room-item.selected { border-color: var(--green-600); background: var(--green-50); }
+.room-item-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.room-item-name { font-size: 13px; font-weight: 500; color: var(--gray-700); }
+.room-item.selected .room-item-name { color: var(--green-800); }
+.room-check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--gray-300); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.room-item.selected .room-check { background: var(--green-600); border-color: var(--green-600); }
+.room-check svg { display: none; }
+.room-item.selected .room-check svg { display: block; }
+.room-extras { display: none; flex-direction: column; gap: 6px; padding-top: 8px; border-top: 1px solid var(--gray-100); margin-top: 4px; }
+.room-item.selected .room-extras { display: flex; }
+.room-select { font-size: 12px; padding: 4px 8px; border: 1px solid var(--gray-300); border-radius: 4px; font-family: var(--font); color: var(--gray-700); background: var(--white); width: 100%; }
+.condition-row { display: flex; gap: 6px; }
+.cond-btn { flex: 1; font-size: 11px; padding: 4px 6px; border-radius: 4px; border: 1px solid var(--gray-300); background: var(--white); cursor: pointer; font-family: var(--font); color: var(--gray-500); text-align: center; transition: all 0.15s; }
+.cond-btn.good.active { background: var(--green-100); border-color: var(--green-600); color: var(--green-800); }
+.cond-btn.fair.active { background: #FFF8EC; border-color: var(--gold); color: #7a5500; }
+.cond-btn.dirty.active { background: var(--red-light); border-color: var(--red); color: var(--red); }
+.quote-panel { background: var(--green-900); border-radius: var(--radius); padding: 20px; margin-bottom: 14px; }
+.quote-title { color: var(--green-400); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
+.quote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.quote-item { background: var(--green-800); border-radius: var(--radius-sm); padding: 12px 14px; }
+.quote-item.highlight { background: var(--green-700); border: 1px solid var(--green-400); }
+.quote-service { font-size: 11px; color: var(--green-400); margin-bottom: 4px; font-weight: 500; }
+.quote-price { font-size: 22px; font-weight: 600; color: #fff; font-family: var(--mono); }
+.quote-note { font-size: 10px; color: var(--green-400); margin-top: 3px; }
+.quote-disclaimer { font-size: 11px; color: var(--green-400); line-height: 1.6; border-top: 1px solid var(--green-700); padding-top: 12px; }
+.est-generate-btn { width: 100%; padding: 12px; background: var(--green-700); color: #fff; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600; font-family: var(--font); cursor: pointer; transition: background 0.15s; margin-bottom: 14px; }
+.est-generate-btn:hover { background: var(--green-900); }
+.est-reset-btn { width: 100%; padding: 9px; background: transparent; border: 1px solid var(--gray-300); color: var(--gray-500); border-radius: var(--radius); font-size: 13px; font-family: var(--font); cursor: pointer; }
+.extras-check-row { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 3px 0; }
+.extras-check-row input[type=checkbox] { accent-color: var(--green-600); width: 14px; height: 14px; cursor: pointer; }
+.extras-check-row span { font-size: 12px; color: var(--gray-700); }
+
+.offline-banner {
+  display: none;
+  background: #7a5500;
+  color: #FFF8EC;
+  font-size: 12px;
+  text-align: center;
+  padding: 6px 16px;
+  font-weight: 500;
+}
+.offline-banner.show { display: block; }
+.install-banner {
+  display: none;
+  background: var(--green-800);
+  color: #fff;
+  font-size: 13px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.install-banner.show { display: flex; }
+.install-btn {
+  padding: 5px 14px;
+  background: var(--green-400);
+  color: var(--green-900);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.install-dismiss { background: none; border: none; color: var(--green-400); cursor: pointer; font-size: 18px; line-height: 1; padding: 0 4px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 520px) {
+  .job-fields { grid-template-columns: 1fr; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .nav-brand { font-size: 13px; }
+  .nav-tab { padding: 5px 10px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">Fatima's <span>Cleaning</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('job')">New Job</button>
+    <button class="nav-tab" onclick="showPage('estimate')">Estimate</button>
+    <button class="nav-tab" onclick="showPage('records')">Records</button>
+    <button class="nav-tab" onclick="showPage('hours')">Hours</button>
+  </div>
+</nav>
+
+<div class="offline-banner" id="offline-banner">No internet connection — app is running offline</div>
+<div class="install-banner" id="install-banner">
+  <span>Add to your home screen for quick access</span>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="install-btn" id="install-btn">Install App</button>
+    <button class="install-dismiss" onclick="dismissInstall()">&#x2715;</button>
+  </div>
+</div>
+
+<!-- ── JOB PAGE ── -->
+<div class="page active" id="page-job">
+
+  <div class="job-card">
+    <div class="job-card-header">
+      <div class="job-card-title">Job Information</div>
+      <div class="job-card-sub" id="today-display"></div>
+    </div>
+    <div class="job-fields">
+      <div class="field">
+        <label>Staff Name</label>
+        <input type="text" id="staff-name" placeholder="Your full name">
+      </div>
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="job-date">
+      </div>
+      <div class="field full">
+        <label>Client Address</label>
+        <input type="text" id="job-addr" placeholder="123 Main St, City, NC">
+      </div>
+      <div class="field">
+        <label>Job Type</label>
+        <select id="job-type" onchange="onJobTypeChange()">
+          <optgroup label="Residential">
+            <option value="res:Residential Deep Clean">Residential Deep Clean</option>
+            <option value="res:Standard Clean">Standard Clean</option>
+            <option value="res:Move-In Clean">Move-In Clean</option>
+            <option value="res:Move-Out Clean">Move-Out Clean</option>
+            <option value="res:Post-Construction">Post-Construction</option>
+          </optgroup>
+          <optgroup label="Commercial">
+            <option value="com:Commercial Standard Clean">Commercial Standard Clean</option>
+            <option value="com:Commercial Deep Clean">Commercial Deep Clean</option>
+            <option value="com:Office Clean">Office Clean</option>
+            <option value="com:Medical / Clinical Clean">Medical / Clinical Clean</option>
+            <option value="com:Post-Construction Commercial">Post-Construction Commercial</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="field">
+        <label>Start Time</label>
+        <input type="time" id="start-time">
+      </div>
+      <div class="field">
+        <label>End Time</label>
+        <input type="time" id="end-time">
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <span class="progress-label">Progress</span>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-fill" style="width:0%"></div></div>
+    <span class="progress-pct" id="prog-text">0 / 86 tasks</span>
+  </div>
+
+  <div id="task-sections"></div>
+
+  <div class="signoff-card">
+    <div class="signoff-header">
+      <div class="signoff-title">Client Sign-Off</div>
+    </div>
+    <div class="signoff-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="field">
+          <label>Client Name</label>
+          <input type="text" id="sup-name" placeholder="Full name">
+        </div>
+        <div class="field">
+          <label>Sign-Off Time</label>
+          <input type="time" id="sup-time">
+        </div>
+      </div>
+      <div class="field">
+        <label>Notes / Comments</label>
+        <input type="text" id="sup-notes" placeholder="Optional notes about this job">
+      </div>
+      <div class="sig-wrap">
+        <label>Client Signature</label>
+        <div class="sig-container">
+          <canvas id="sigpad"></canvas>
+          <span class="sig-placeholder" id="sig-ph">Sign here</span>
+          <button class="sig-clear-btn" onclick="clearSig()">Clear</button>
+        </div>
+      </div>
+      <div class="warning-box" id="warn-box"></div>
+      <button class="submit-btn" onclick="submitJob()">Submit &amp; Sign Off</button>
+      <div class="success-box" id="success-box">
+        <div class="success-check">
+          <svg width="22" height="17" viewBox="0 0 22 17" fill="none">
+            <polyline points="2,8 8,14 20,2" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="success-heading">Job Complete — Signed Off</div>
+        <div class="success-meta" id="success-meta"></div>
+        <div class="approved-stamp">APPROVED</div><br>
+        <button class="new-job-btn" onclick="resetJob()">Start New Job</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HOURS PAGE ── -->
+<div class="page" id="page-hours">
+  <div class="records-header">
+    <div class="records-title">Staff Hours</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <select id="hours-filter-staff" onchange="renderHours()" style="font-size:13px;padding:5px 10px;border:1px solid var(--gray-300);border-radius:var(--radius-sm);font-family:var(--font);color:var(--gray-900);background:var(--white);">
+        <option value="">All staff</option>
+      </select>
+      <select id="hours-filter-period" onchange="renderHours()" style="font-size:13px;padding:5px 10px;border:1px solid var(--gray-300);border-radius:var(--radius-sm);font-family:var(--font);color:var(--gray-900);background:var(--white);">
+        <option value="all">All time</option>
+        <option value="week">This week</option>
+        <option value="month">This month</option>
+      </select>
+    </div>
+  </div>
+  <div id="hours-summary-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;"></div>
+  <div id="hours-staff-sections"></div>
+</div>
+
+<!-- ── ESTIMATE PAGE ── -->
+<div class="page" id="page-estimate">
+
+  <div class="est-card">
+    <div class="est-card-header">
+      <div class="est-card-title">Client &amp; Property Info</div>
+      <div style="font-size:11px;color:var(--green-400)" id="est-date-display"></div>
+    </div>
+    <div class="est-card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field"><label>Client Name</label><input type="text" id="est-client" placeholder="Full name" oninput="calcEstimate()"></div>
+        <div class="field"><label>Phone / Email</label><input type="text" id="est-contact" placeholder="Contact info"></div>
+        <div class="field" style="grid-column:1/-1"><label>Property Address</label><input type="text" id="est-addr" placeholder="123 Main St, City, NC"></div>
+        <div class="field">
+          <label>Property Type</label>
+          <select id="est-prop-type" onchange="updateEstRooms();calcEstimate()">
+            <option value="res">Residential</option>
+            <option value="com">Commercial</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Approx. Sq. Footage</label>
+          <input type="number" id="est-sqft" placeholder="e.g. 1500" min="100" oninput="calcEstimate()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="est-card">
+    <div class="est-card-header"><div class="est-card-title">Walk-Through — Select Rooms &amp; Condition</div></div>
+    <div class="est-card-body">
+      <p style="font-size:12px;color:var(--gray-500);margin-bottom:12px">Tap a room to include it. Set size and condition for each selected room.</p>
+      <div class="room-grid" id="est-room-grid"></div>
+    </div>
+  </div>
+
+  <div class="est-card">
+    <div class="est-card-header"><div class="est-card-title">Add-On Services</div></div>
+    <div class="est-card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="est-addons-grid"></div>
+    </div>
+  </div>
+
+  <div class="est-card">
+    <div class="est-card-header"><div class="est-card-title">Walk-Through Notes</div></div>
+    <div class="est-card-body">
+      <div class="field"><label>General observations</label>
+        <textarea id="est-notes" rows="3" style="width:100%;padding:8px 11px;border:1px solid var(--gray-300);border-radius:var(--radius-sm);font-size:13px;font-family:var(--font);color:var(--gray-900);resize:vertical;outline:none;background:var(--white)" placeholder="Pet hair, clutter level, last cleaned, special requests…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <button class="est-generate-btn" onclick="calcEstimate()">Generate Estimate</button>
+
+  <div id="est-quote-wrap" style="display:none">
+    <div class="quote-panel">
+      <div class="quote-title">Estimate — <span id="q-client-name">Client</span></div>
+      <div class="quote-grid">
+        <div class="quote-item highlight">
+          <div class="quote-service">One-Time Deep Clean</div>
+          <div class="quote-price" id="q-deep">—</div>
+          <div class="quote-note">First visit / reset clean</div>
+        </div>
+        <div class="quote-item">
+          <div class="quote-service">Weekly Service</div>
+          <div class="quote-price" id="q-weekly">—</div>
+          <div class="quote-note">per visit</div>
+        </div>
+        <div class="quote-item">
+          <div class="quote-service">Bi-Weekly Service</div>
+          <div class="quote-price" id="q-biweekly">—</div>
+          <div class="quote-note">per visit</div>
+        </div>
+        <div class="quote-item">
+          <div class="quote-service">Monthly Service</div>
+          <div class="quote-price" id="q-monthly">—</div>
+          <div class="quote-note">per visit</div>
+        </div>
+      </div>
+      <div class="quote-disclaimer" id="q-breakdown"></div>
+    </div>
+
+    <div class="est-card">
+      <div class="est-card-header"><div class="est-card-title">Estimate Summary</div></div>
+      <div class="est-card-body" id="q-summary-body"></div>
+    </div>
+
+    <button class="est-reset-btn" onclick="resetEstimate()">Start New Estimate</button>
+  </div>
+
+</div>
+
+<!-- ── RECORDS PAGE ── -->
+<div class="page" id="page-records">
+  <div class="records-header">
+    <div class="records-title">Job Records</div>
+    <div class="records-count" id="records-count">0 jobs</div>
+  </div>
+  <div id="records-list"></div>
+</div>
+
+<script>
+const ALL_SECTIONS = {
+  res: [
+    {name:"Kitchen", icon:"🍽", tasks:["Clean and degrease stovetop, burners, and grates","Clean inside and outside of oven","Wipe oven hood, filter, and exhaust fan","Clean microwave inside and out, including the turntable","Wipe all appliance exteriors (refrigerator, dishwasher, toaster)","Clean inside refrigerator — shelves, drawers, door seals","Defrost freezer and wipe down interior","Clean dishwasher filter and run cleaning cycle","Scrub sink, faucet, and garbage disposal","Degrease and wipe cabinet fronts and drawer faces","Empty and wipe inside all cabinets and drawers","Clean countertops and backsplash tile/grout","Wash small appliances (coffee maker, blender, etc.)","Wipe light fixtures and switch plates","Sweep, mop, and sanitize floor including corners"]},
+    {name:"Bathrooms", icon:"🚿", tasks:["Scrub and disinfect toilet (bowl, seat, lid, base, behind)","Clean and descale showerhead and faucets","Scrub shower/tub walls, floor, and grout lines","Clean glass shower doors or curtain and liner","Disinfect sink bowl, faucet, and drain","Clean mirror and medicine cabinet inside and out","Wipe vanity, countertop, and cabinet exteriors","Empty and wipe inside vanity cabinets and drawers","Wash or replace bath mats and towels","Dust light fixtures and exhaust fan cover","Wipe walls, tiles, and baseboards","Disinfect door handle and light switch plate","Sweep, mop, and sanitize floor including corners"]},
+    {name:"Bedrooms", icon:"🛏", tasks:["Strip and launder all bedding, pillowcases, duvet covers","Flip or rotate mattress; vacuum and spot-clean","Dust and wipe headboard, bed frame, and nightstands","Clean under the bed (vacuum/mop)","Empty, clean, and reorganize closet","Dust shelving, clothing rods, and closet floor","Wipe down all furniture surfaces","Clean mirrors and glass surfaces","Dust ceiling fan blades and light fixtures","Vacuum window tracks, sills, and blinds","Wash curtains or drapes if applicable","Vacuum and deep-clean carpet or mop hardwood floor","Dust baseboards and wipe door frames","Wipe light switch plates and door handles"]},
+    {name:"Living & Dining", icon:"🛋", tasks:["Dust and wipe all furniture surfaces","Clean and condition upholstered furniture","Remove and launder couch cushion covers if applicable","Vacuum under and behind furniture","Dust ceiling fan, light fixtures, and lamp shades","Clean TV screen, entertainment unit, and electronics","Dust and wipe bookshelves and decorative items","Wipe fireplace surround and mantel","Clean mirrors and picture frames","Vacuum or steam-clean rugs and carpets","Mop or polish hardwood/tile floors","Wipe baseboards, window sills, and blinds","Wash curtains or wipe shutters","Clean door handles and light switch plates"]},
+    {name:"Entryway & Hallways", icon:"🚪", tasks:["Wipe front door (inside and out) and hardware","Clean entryway mirror and coat hooks","Organize and clean entry closet","Dust light fixtures and ceiling corners","Wipe baseboards and scuff marks on walls","Clean and disinfect door handles","Sweep, mop, or vacuum floors and runners"]},
+    {name:"Laundry Room", icon:"🧺", tasks:["Clean inside washing machine drum (run cleaning cycle)","Wipe down washer and dryer exteriors","Clean dryer lint trap and vent duct","Wipe down laundry sink and faucet","Wipe shelves and storage surfaces","Sweep and mop floor including behind appliances"]},
+    {name:"Whole-Home", icon:"🏠", tasks:["Dust all ceiling corners and remove cobwebs","Wipe down all interior walls (spot-clean scuffs)","Clean all interior windows — glass, frames, and sills","Dust and wipe all baseboards throughout home","Dust all vents, registers, and HVAC returns","Replace HVAC air filter","Test and dust smoke and CO detectors","Wipe all light switches and outlet covers","Clean all interior door frames and surfaces","Wipe staircase railing and spindles","Vacuum carpeted stairs and landing areas","Take out all trash and recycling","Disinfect high-touch surfaces (doorknobs, remotes, cabinet pulls)"]}
+  ],
+  com: [
+    {name:"Lobby & Reception", icon:"🏢", tasks:["Vacuum and mop entrance floors and mats","Clean and polish glass entrance doors and frames","Wipe reception desk, counters, and transaction windows","Disinfect all high-touch surfaces (door handles, keypads, buzzers)","Dust and wipe reception furniture and shelving","Empty and reline trash and recycling bins","Clean and disinfect water fountain / hydration station","Spot-clean walls, partitions, and baseboards","Wipe light switches and outlet covers","Dust light fixtures, ceiling vents, and corners","Clean interior windows, sills, and blinds","Sweep and mop stairwell landing if present"]},
+    {name:"Restrooms", icon:"🚻", tasks:["Scrub and disinfect all toilets (bowl, seat, lid, base, behind)","Clean and disinfect all urinals and drains","Disinfect all sinks, faucets, and countertops","Restock soap dispensers, paper towels, and toilet paper","Clean and sanitize baby changing station if present","Scrub tile walls, partitions, and grout lines","Clean mirrors and any glass surfaces","Empty and reline all waste bins","Disinfect door handles, stall latches, and push plates","Wipe baseboards and remove scuffs from walls","Sweep, mop, and sanitize floor including corners and behind fixtures","Check and report any plumbing issues or needed repairs"]},
+    {name:"Office Areas", icon:"💼", tasks:["Empty and reline all desk-side and common waste bins","Vacuum all carpeted areas including under desks","Mop or polish all hard floors","Dust and wipe all desk surfaces (around equipment, not on computers)","Wipe down chairs, armrests, and chair bases","Clean and disinfect shared keyboards, mice, and phones if requested","Dust monitor screens lightly (dry cloth only)","Wipe cubicle walls, partition tops, and shelving","Dust windowsills, blinds, and window frames","Clean interior glass partitions and office windows","Disinfect door handles, light switches, and shared surfaces","Remove any visible cobwebs from ceiling corners","Spot-clean walls, baseboards, and kick plates"]},
+    {name:"Break Room / Kitchen", icon:"☕", tasks:["Clean and disinfect all countertops and backsplash","Wipe exterior of all appliances (microwave, refrigerator, coffee maker, toaster)","Clean microwave interior — walls, turntable, and door seal","Wipe cabinet fronts, drawer faces, and handles","Scrub sink, faucet, and drain","Empty and reline all trash and recycling bins","Clean and sanitize tables and chairs","Restock paper towels and dish soap if applicable","Sweep, mop, and sanitize floor including corners","Wipe light switches, outlet covers, and door handles","Dust light fixtures and exhaust vent cover"]},
+    {name:"Conference Rooms", icon:"📋", tasks:["Wipe down conference table — all surfaces and edges","Clean and disinfect all chairs including armrests and bases","Clean dry-erase boards and replace markers if needed","Dust AV equipment, projector, and screens (dry cloth)","Wipe all glass surfaces including presentation screens","Empty and reline trash bins","Vacuum carpet or mop hard floors","Dust windowsills, blinds, and window frames","Wipe door handles, light switches, and wall plates","Spot-clean walls, baseboards, and partitions","Arrange furniture back to standard configuration"]},
+    {name:"Hallways & Common Areas", icon:"🚶", tasks:["Vacuum all carpeted hallways and common areas","Mop all hard-floor hallways and common areas","Dust and wipe all hallway furniture, benches, and displays","Clean and disinfect elevator buttons (inside and out) and door tracks","Wipe staircase railings, balusters, and newel posts","Vacuum or sweep staircase treads and landings","Spot-clean walls and remove scuffs","Wipe baseboards throughout","Dust light fixtures, exit signs, and ceiling vents","Clean and disinfect all door handles and push plates","Empty and reline all common area trash and recycling bins"]},
+    {name:"Storage & Utility Areas", icon:"🗄", tasks:["Sweep and mop floor","Wipe down shelving and storage units","Remove any trash or debris","Wipe utility sink and faucet if present","Check and restock cleaning supply inventory","Ensure mop buckets are clean and ready","Dispose of used cleaning materials properly"]},
+    {name:"Building-Wide Tasks", icon:"🏗", tasks:["Dust all ceiling corners and remove cobwebs throughout building","Clean all interior-facing windows, frames, and sills","Wipe all HVAC vents, registers, and return air grilles","Dust all fire extinguisher cabinets and safety signage","Disinfect all shared touchpoints (door handles, railings, keypads)","Empty all exterior ash urns and wipe down if applicable","Collect and consolidate all trash to building dumpster area","Sweep exterior entrance, steps, and immediate walkway","Check all restrooms are stocked before leaving","Report any maintenance issues (broken fixtures, leaks, damage) to supervisor"]}
+  ]
+};
+
+let SECTIONS = ALL_SECTIONS.res;
+let TOTAL = SECTIONS.reduce((a,s) => a + s.tasks.length, 0);
+let taskState = {};
+let taskTimes = {};
+let hasSig = false;
+let drawing = false;
+
+// ── INIT ──
+const now = new Date();
+document.getElementById('today-display').textContent = now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+document.getElementById('job-date').value = now.toISOString().split('T')[0];
+const hh = String(now.getHours()).padStart(2,'0');
+const mm = String(now.getMinutes()).padStart(2,'0');
+document.getElementById('start-time').value = hh + ':' + mm;
+document.getElementById('sup-time').value = hh + ':' + mm;
+
+// ── CHECKLIST SWITCHING ──
+function onJobTypeChange() {
+  const val = document.getElementById('job-type').value;
+  const type = val.startsWith('com:') ? 'com' : 'res';
+  SECTIONS = ALL_SECTIONS[type];
+  TOTAL = SECTIONS.reduce((a,s) => a + s.tasks.length, 0);
+  taskState = {}; taskTimes = {};
+  buildTasks();
+  updateProgress();
+}
+
+// ── BUILD TASKS ──
+function buildTasks() {
+  const wrap = document.getElementById('task-sections');
+  wrap.innerHTML = '';
+  SECTIONS.forEach((sec, si) => {
+    const secWrap = document.createElement('div');
+    secWrap.className = 'section-wrap';
+    const head = document.createElement('div');
+    head.className = 'section-head';
+    head.id = 'sh-' + si;
+    head.innerHTML = `<div class="section-head-left"><span class="section-icon">${sec.icon}</span><span class="section-name">${sec.name}</span></div><div class="section-right"><span class="section-count" id="sc-${si}">0 / ${sec.tasks.length}</span><span class="section-chevron">&#9660;</span></div>`;
+    head.onclick = () => toggleSection(si);
+    const tasksDiv = document.createElement('div');
+    tasksDiv.className = 'section-tasks';
+    tasksDiv.id = 'st-' + si;
+    sec.tasks.forEach((task, ti) => {
+      const k = si + '-' + ti;
+      const row = document.createElement('div');
+      row.className = 'task-row';
+      row.id = 'row-' + k;
+      row.innerHTML = `<div class="task-cb" id="cb-${k}"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><polyline points="1,4 4,7 10,1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="task-label">${task}</span><span class="task-time" id="tt-${k}"></span>`;
+      row.onclick = () => toggleTask(si, ti);
+      tasksDiv.appendChild(row);
+    });
+    secWrap.appendChild(head);
+    secWrap.appendChild(tasksDiv);
+    wrap.appendChild(secWrap);
+  });
+}
+
+function toggleSection(si) {
+  const tasks = document.getElementById('st-' + si);
+  const head = document.getElementById('sh-' + si);
+  tasks.classList.toggle('hidden');
+  head.classList.toggle('collapsed');
+}
+
+function toggleTask(si, ti) {
+  const k = si + '-' + ti;
+  taskState[k] = !taskState[k];
+  if (taskState[k]) {
+    const t = new Date();
+    taskTimes[k] = t.getHours().toString().padStart(2,'0') + ':' + t.getMinutes().toString().padStart(2,'0');
+    document.getElementById('tt-' + k).textContent = taskTimes[k];
+  } else {
+    delete taskTimes[k];
+    document.getElementById('tt-' + k).textContent = '';
+  }
+  document.getElementById('row-' + k).classList.toggle('done', taskState[k]);
+  updateProgress();
+  updateSectionCount(si);
+}
+
+function updateProgress() {
+  const done = Object.values(taskState).filter(Boolean).length;
+  const pct = Math.round(done / TOTAL * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = done + ' / ' + TOTAL + ' tasks';
+}
+
+function updateSectionCount(si) {
+  const sec = SECTIONS[si];
+  const done = sec.tasks.filter((_,ti) => taskState[si+'-'+ti]).length;
+  document.getElementById('sc-' + si).textContent = done + ' / ' + sec.tasks.length;
+}
+
+// ── SIGNATURE ──
+const canvas = document.getElementById('sigpad');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const w = canvas.parentElement.offsetWidth;
+  canvas.width = w;
+  canvas.height = 100;
+  ctx.strokeStyle = '#1E5740';
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+}
+
+function getPos(e) {
+  const r = canvas.getBoundingClientRect();
+  const src = e.touches ? e.touches[0] : e;
+  return { x: (src.clientX - r.left) * (canvas.width / r.width), y: (src.clientY - r.top) * (canvas.height / r.height) };
+}
+
+canvas.addEventListener('mousedown', e => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+canvas.addEventListener('mousemove', e => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); hasSig = true; document.getElementById('sig-ph').style.opacity = '0'; });
+canvas.addEventListener('mouseup', () => drawing = false);
+canvas.addEventListener('mouseleave', () => drawing = false);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, {passive:false});
+canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); hasSig = true; document.getElementById('sig-ph').style.opacity = '0'; }, {passive:false});
+canvas.addEventListener('touchend', () => drawing = false);
+
+function clearSig() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  hasSig = false;
+  document.getElementById('sig-ph').style.opacity = '1';
+}
+
+// ── SUBMIT ──
+function submitJob() {
+  const warn = document.getElementById('warn-box');
+  const done = Object.values(taskState).filter(Boolean).length;
+  const supName = document.getElementById('sup-name').value.trim();
+  if (!document.getElementById('staff-name').value.trim()) {
+    warn.textContent = 'Please enter the staff member name.'; warn.classList.add('show'); return;
+  }
+  if (!supName) {
+    warn.textContent = 'Please enter the client name.'; warn.classList.add('show'); return;
+  }
+  if (!hasSig) {
+    warn.textContent = 'Client signature is required.'; warn.classList.add('show'); return;
+  }
+  warn.classList.remove('show');
+
+  const startTime = document.getElementById('start-time').value;
+  const endTime = document.getElementById('end-time').value;
+  let hoursWorked = null;
+  if (startTime && endTime) {
+    const [sh, sm] = startTime.split(':').map(Number);
+    const [eh, em] = endTime.split(':').map(Number);
+    const mins = (eh * 60 + em) - (sh * 60 + sm);
+    if (mins > 0) hoursWorked = mins / 60;
+  }
+
+  const record = {
+    id: Date.now(),
+    staffName: document.getElementById('staff-name').value.trim(),
+    address: document.getElementById('job-addr').value.trim() || 'No address',
+    jobType: document.getElementById('job-type').value.replace(/^(res|com):/, ''),
+    date: document.getElementById('job-date').value,
+    startTime,
+    endTime,
+    hoursWorked,
+    supName: supName,
+    supTime: document.getElementById('sup-time').value,
+    notes: document.getElementById('sup-notes').value.trim(),
+    tasksCompleted: done,
+    totalTasks: TOTAL,
+    taskTimes: {...taskTimes},
+    signature: canvas.toDataURL('image/png')
+  };
+
+  const records = getRecords();
+  records.unshift(record);
+  localStorage.setItem('fatimas_jobs', JSON.stringify(records));
+
+  const staffName = record.staffName;
+  document.getElementById('success-meta').textContent =
+    staffName + ' · ' + record.address + ' · Signed by ' + supName + ' at ' + record.supTime;
+  document.getElementById('submit-btn').style.display = 'none';
+  document.getElementById('success-box').classList.add('show');
+}
+
+function resetJob() {
+  taskState = {}; taskTimes = {};
+  buildTasks();
+  updateProgress();
+  clearSig();
+  ['staff-name','job-addr','sup-name','sup-notes','end-time'].forEach(id => document.getElementById(id).value = '');
+  const n = new Date();
+  document.getElementById('job-date').value = n.toISOString().split('T')[0];
+  const h = String(n.getHours()).padStart(2,'0'), m = String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('start-time').value = h+':'+m;
+  document.getElementById('sup-time').value = h+':'+m;
+  document.getElementById('submit-btn').style.display = 'block';
+  document.getElementById('success-box').classList.remove('show');
+  document.getElementById('warn-box').classList.remove('show');
+}
+
+// ── RECORDS ──
+function getRecords() {
+  try { return JSON.parse(localStorage.getItem('fatimas_jobs') || '[]'); } catch { return []; }
+}
+
+function renderRecords() {
+  const records = getRecords();
+  const list = document.getElementById('records-list');
+  const countEl = document.getElementById('records-count');
+  countEl.textContent = records.length + ' job' + (records.length !== 1 ? 's' : '');
+  list.innerHTML = '';
+  if (!records.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">No completed jobs yet. Submit your first job sheet to see records here.</div></div>';
+    return;
+  }
+  records.forEach((rec, idx) => {
+    const card = document.createElement('div');
+    card.className = 'record-card';
+    const dateStr = rec.date ? new Date(rec.date + 'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}) : '—';
+    card.innerHTML = `
+      <div class="record-header" onclick="toggleRecord(${idx})">
+        <div class="record-left">
+          <div class="record-addr">${rec.address}</div>
+          <div class="record-meta">${dateStr} &nbsp;·&nbsp; ${rec.staffName} &nbsp;·&nbsp; ${rec.jobType}</div>
+        </div>
+        <div class="record-right">
+          <span class="badge-approved">APPROVED</span>
+          <span class="record-chevron" id="rc-${idx}">&#9660;</span>
+        </div>
+      </div>
+      <div class="record-detail" id="rd-${idx}">
+        <div class="detail-grid">
+          <div class="detail-item"><label>Staff</label><span>${rec.staffName}</span></div>
+          <div class="detail-item"><label>Job type</label><span>${rec.jobType}</span></div>
+          <div class="detail-item"><label>Start time</label><span>${rec.startTime || '—'}</span></div>
+          <div class="detail-item"><label>End time</label><span>${rec.endTime || '—'}</span></div>
+          <div class="detail-item"><label>Hours worked</label><span>${rec.hoursWorked ? fmtHours(rec.hoursWorked) : '—'}</span></div>
+          <div class="detail-item"><label>Sign-off time</label><span>${rec.supTime || '—'}</span></div>
+          <div class="detail-item"><label>Client sign-off</label><span>${rec.supName}</span></div>
+          <div class="detail-item"><label>Tasks completed</label><span>${rec.tasksCompleted} of ${rec.totalTasks || TOTAL}</span></div>
+          ${rec.notes ? `<div class="detail-item" style="grid-column:1/-1"><label>Notes</label><span>${rec.notes}</span></div>` : ''}
+        </div>
+        ${rec.signature ? `<div class="sig-img"><img src="${rec.signature}" alt="Supervisor signature" style="max-height:80px;"></div>` : ''}
+        <button class="delete-btn" onclick="deleteRecord(${rec.id}, event)">Delete this record</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function toggleRecord(idx) {
+  const detail = document.getElementById('rd-' + idx);
+  const chev = document.getElementById('rc-' + idx);
+  const open = detail.classList.toggle('open');
+  chev.style.transform = open ? 'rotate(180deg)' : '';
+}
+
+function deleteRecord(id, e) {
+  e.stopPropagation();
+  if (!confirm('Delete this job record? This cannot be undone.')) return;
+  const records = getRecords().filter(r => r.id !== id);
+  localStorage.setItem('fatimas_jobs', JSON.stringify(records));
+  renderRecords();
+}
+
+// ── PAGE SWITCHING ──
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  event.target.classList.add('active');
+  if (page === 'records') renderRecords();
+  if (page === 'hours') renderHours();
+  if (page === 'estimate') updateEstRooms();
+}
+
+// ── HOURS ──
+function fmtHours(h) {
+  if (h === null || h === undefined) return '—';
+  const hrs = Math.floor(h);
+  const mins = Math.round((h - hrs) * 60);
+  if (hrs === 0) return mins + 'm';
+  return mins > 0 ? hrs + 'h ' + mins + 'm' : hrs + 'h';
+}
+
+function renderHours() {
+  const allRecords = getRecords();
+  const staffFilter = document.getElementById('hours-filter-staff').value;
+  const periodFilter = document.getElementById('hours-filter-period').value;
+
+  const now = new Date();
+  const startOfWeek = new Date(now); startOfWeek.setDate(now.getDate() - now.getDay()); startOfWeek.setHours(0,0,0,0);
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  let records = allRecords.filter(r => r.hoursWorked !== null && r.hoursWorked !== undefined);
+  if (periodFilter === 'week') records = records.filter(r => r.date && new Date(r.date + 'T12:00:00') >= startOfWeek);
+  if (periodFilter === 'month') records = records.filter(r => r.date && new Date(r.date + 'T12:00:00') >= startOfMonth);
+
+  // Populate staff filter dropdown
+  const allStaff = [...new Set(allRecords.map(r => r.staffName).filter(Boolean))].sort();
+  const sel = document.getElementById('hours-filter-staff');
+  const curVal = sel.value;
+  sel.innerHTML = '<option value="">All staff</option>' + allStaff.map(s => `<option value="${s}"${s===curVal?' selected':''}>${s}</option>`).join('');
+
+  if (staffFilter) records = records.filter(r => r.staffName === staffFilter);
+
+  // Summary cards
+  const totalHrs = records.reduce((a,r) => a + (r.hoursWorked||0), 0);
+  const totalJobs = records.length;
+  const staffSet = [...new Set(records.map(r => r.staffName).filter(Boolean))];
+  const avgHrs = totalJobs > 0 ? totalHrs / totalJobs : 0;
+
+  document.getElementById('hours-summary-cards').innerHTML = `
+    <div class="metric-card"><div class="metric-label">Total hours</div><div class="metric-value">${fmtHours(totalHrs)}</div><div class="metric-sub">${periodFilter === 'week' ? 'this week' : periodFilter === 'month' ? 'this month' : 'all time'}</div></div>
+    <div class="metric-card"><div class="metric-label">Jobs tracked</div><div class="metric-value">${totalJobs}</div><div class="metric-sub">with time recorded</div></div>
+    <div class="metric-card"><div class="metric-label">Avg per job</div><div class="metric-value">${fmtHours(avgHrs)}</div><div class="metric-sub">per job</div></div>
+    <div class="metric-card"><div class="metric-label">Staff tracked</div><div class="metric-value">${staffSet.length}</div><div class="metric-sub">team member${staffSet.length !== 1 ? 's' : ''}</div></div>
+  `;
+
+  const wrap = document.getElementById('hours-staff-sections');
+  wrap.innerHTML = '';
+
+  if (!records.length) {
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">⏱</div><div class="empty-text">No hours recorded yet. Make sure to fill in start and end times when submitting jobs.</div></div>';
+    return;
+  }
+
+  // Group by staff
+  const byStaff = {};
+  records.forEach(r => {
+    const name = r.staffName || 'Unknown';
+    if (!byStaff[name]) byStaff[name] = [];
+    byStaff[name].push(r);
+  });
+
+  Object.entries(byStaff).sort((a,b) => a[0].localeCompare(b[0])).forEach(([name, jobs]) => {
+    const totalH = jobs.reduce((a,r) => a + (r.hoursWorked||0), 0);
+    const section = document.createElement('div');
+    section.className = 'staff-section';
+    const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+
+    let rowsHtml = jobs.map(r => {
+      const dateStr = r.date ? new Date(r.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}) : '—';
+      return `<div class="hours-row">
+        <span class="hours-date">${dateStr}</span>
+        <span class="hours-addr">${r.address}</span>
+        <span class="hours-type">${r.jobType}</span>
+        <span class="hours-times">${r.startTime||'?'} – ${r.endTime||'?'}</span>
+        <span class="hours-duration">${fmtHours(r.hoursWorked)}</span>
+      </div>`;
+    }).join('');
+
+    section.innerHTML = `
+      <div class="staff-section-header" onclick="this.nextElementSibling.classList.toggle('hidden')">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:34px;height:34px;border-radius:50%;background:var(--green-100);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--green-800)">${initials}</div>
+          <div>
+            <div class="staff-section-name">${name}</div>
+            <div class="staff-section-meta">${jobs.length} job${jobs.length!==1?'s':''}</div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:18px;font-weight:600;color:var(--green-800);font-family:var(--mono)">${fmtHours(totalH)}</div>
+          <div style="font-size:11px;color:var(--green-600)">total</div>
+        </div>
+      </div>
+      <div class="section-tasks">${rowsHtml}</div>
+    `;
+    wrap.appendChild(section);
+  });
+}
+
+// ── ESTIMATE ──
+const EST_ROOMS = {
+  res: [
+    {id:'kitchen',   name:'Kitchen',          baseMin:35, baseMax:55},
+    {id:'bathroom',  name:'Bathroom',         baseMin:25, baseMax:40},
+    {id:'bedroom',   name:'Bedroom',          baseMin:20, baseMax:35},
+    {id:'living',    name:'Living Room',      baseMin:25, baseMax:40},
+    {id:'dining',    name:'Dining Room',      baseMin:15, baseMax:25},
+    {id:'office',    name:'Home Office',      baseMin:15, baseMax:25},
+    {id:'laundry',   name:'Laundry Room',     baseMin:15, baseMax:25},
+    {id:'hallway',   name:'Hallways',         baseMin:10, baseMax:20},
+    {id:'basement',  name:'Basement',         baseMin:30, baseMax:50},
+    {id:'garage',    name:'Garage',           baseMin:25, baseMax:45},
+    {id:'sunroom',   name:'Sunroom/Porch',    baseMin:15, baseMax:30},
+    {id:'mudroom',   name:'Mudroom/Entry',    baseMin:10, baseMax:20},
+  ],
+  com: [
+    {id:'lobby',     name:'Lobby/Reception',  baseMin:40, baseMax:65},
+    {id:'restroom',  name:'Restrooms',        baseMin:30, baseMax:50},
+    {id:'office',    name:'Office Area',      baseMin:35, baseMax:55},
+    {id:'breakroom', name:'Break Room',       baseMin:25, baseMax:40},
+    {id:'conf',      name:'Conference Room',  baseMin:20, baseMax:35},
+    {id:'hallway',   name:'Hallways',         baseMin:20, baseMax:35},
+    {id:'warehouse', name:'Warehouse/Storage',baseMin:35, baseMax:60},
+    {id:'exterior',  name:'Exterior Entrance',baseMin:20, baseMax:35},
+  ]
+};
+
+const EST_ADDONS = [
+  {id:'fridge',   name:'Inside refrigerator',  price:25},
+  {id:'oven',     name:'Inside oven',           price:25},
+  {id:'windows',  name:'Interior windows',      price:35},
+  {id:'cabinets', name:'Inside cabinets',       price:40},
+  {id:'laundry',  name:'Laundry (wash & fold)', price:30},
+  {id:'blinds',   name:'Blinds deep clean',     price:30},
+  {id:'walls',    name:'Wall washing',          price:45},
+  {id:'carpet',   name:'Carpet steam clean',    price:60},
+];
+
+const CONDITION_MULT = { good: 1.0, fair: 1.2, dirty: 1.5 };
+const SIZE_MULT      = { sm: 0.85, md: 1.0, lg: 1.25, xl: 1.5 };
+let estRoomState = {};
+
+function updateEstRooms() {
+  const type = document.getElementById('est-prop-type').value;
+  const rooms = EST_ROOMS[type];
+  const grid = document.getElementById('est-room-grid');
+  estRoomState = {};
+  grid.innerHTML = '';
+  rooms.forEach(room => {
+    estRoomState[room.id] = { selected: false, size: 'md', condition: 'good', count: 1 };
+    const el = document.createElement('div');
+    el.className = 'room-item';
+    el.id = 'ri-' + room.id;
+    el.innerHTML = `
+      <div class="room-item-top">
+        <span class="room-item-name">${room.name}</span>
+        <div class="room-check"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 3.5,6.5 9,1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+      <div class="room-extras">
+        <div style="display:flex;align-items:center;gap:6px">
+          <label style="font-size:11px;color:var(--gray-500);min-width:32px">Count</label>
+          <input type="number" min="1" max="20" value="1" style="width:52px;padding:3px 6px;border:1px solid var(--gray-300);border-radius:4px;font-size:12px;font-family:var(--font)" onchange="estRoomState['${room.id}'].count=Math.max(1,parseInt(this.value)||1);calcEstimate()">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--gray-500);display:block;margin-bottom:3px">Size</label>
+          <select class="room-select" onchange="estRoomState['${room.id}'].size=this.value;calcEstimate()">
+            <option value="sm">Small</option>
+            <option value="md" selected>Medium</option>
+            <option value="lg">Large</option>
+            <option value="xl">Extra large</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--gray-500);display:block;margin-bottom:3px">Condition</label>
+          <div class="condition-row">
+            <button class="cond-btn good active" onclick="setCondition('${room.id}','good',this)">Good</button>
+            <button class="cond-btn fair" onclick="setCondition('${room.id}','fair',this)">Fair</button>
+            <button class="cond-btn dirty" onclick="setCondition('${room.id}','dirty',this)">Dirty</button>
+          </div>
+        </div>
+      </div>`;
+    el.addEventListener('click', e => {
+      if (e.target.closest('select,input,button')) return;
+      toggleRoom(room.id, el);
+    });
+    grid.appendChild(el);
+  });
+
+  // Addons
+  const ag = document.getElementById('est-addons-grid');
+  ag.innerHTML = '';
+  EST_ADDONS.forEach(a => {
+    const d = document.createElement('div');
+    d.innerHTML = `<label class="extras-check-row"><input type="checkbox" id="addon-${a.id}" onchange="calcEstimate()"><span>${a.name} <span style="color:var(--green-600);font-weight:500">+$${a.price}</span></span></label>`;
+    ag.appendChild(d);
+  });
+}
+
+function toggleRoom(id, el) {
+  estRoomState[id].selected = !estRoomState[id].selected;
+  el.classList.toggle('selected', estRoomState[id].selected);
+  calcEstimate();
+}
+
+function setCondition(id, cond, btn) {
+  estRoomState[id].condition = cond;
+  btn.closest('.condition-row').querySelectorAll('.cond-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  calcEstimate();
+}
+
+function calcEstimate() {
+  const type = document.getElementById('est-prop-type') ? document.getElementById('est-prop-type').value : 'res';
+  const rooms = EST_ROOMS[type];
+  const sqft = parseInt(document.getElementById('est-sqft').value) || 0;
+  const sqftAdj = sqft > 0 ? Math.max(0.8, Math.min(1.5, sqft / 1500)) : 1.0;
+
+  let baseTotal = 0;
+  let roomLines = [];
+  rooms.forEach(room => {
+    const s = estRoomState[room.id];
+    if (!s || !s.selected) return;
+    const mid = (room.baseMin + room.baseMax) / 2;
+    const price = Math.round(mid * SIZE_MULT[s.size] * CONDITION_MULT[s.condition] * sqftAdj * s.count);
+    baseTotal += price;
+    const condLabel = s.condition === 'good' ? '' : s.condition === 'fair' ? ' (fair)' : ' (heavily soiled)';
+    const cntLabel = s.count > 1 ? ` x${s.count}` : '';
+    roomLines.push(`${room.name}${cntLabel}${condLabel}: $${price}`);
+  });
+
+  let addonTotal = 0;
+  let addonLines = [];
+  EST_ADDONS.forEach(a => {
+    const cb = document.getElementById('addon-' + a.id);
+    if (cb && cb.checked) { addonTotal += a.price; addonLines.push(`${a.name}: +$${a.price}`); }
+  });
+
+  const deep     = Math.round((baseTotal + addonTotal) * 1.0);
+  const weekly   = Math.round((baseTotal * 0.55 + addonTotal) );
+  const biweekly = Math.round((baseTotal * 0.65 + addonTotal) );
+  const monthly  = Math.round((baseTotal * 0.80 + addonTotal) );
+
+  if (deep === 0) return;
+
+  document.getElementById('est-quote-wrap').style.display = 'block';
+  document.getElementById('q-client-name').textContent = document.getElementById('est-client').value.trim() || 'Client';
+  document.getElementById('q-deep').textContent     = '$' + deep;
+  document.getElementById('q-weekly').textContent   = '$' + weekly;
+  document.getElementById('q-biweekly').textContent = '$' + biweekly;
+  document.getElementById('q-monthly').textContent  = '$' + monthly;
+
+  const allLines = [...roomLines, ...(addonLines.length ? ['— Add-ons —', ...addonLines] : [])];
+  document.getElementById('q-breakdown').textContent =
+    'Rooms included: ' + allLines.join('  ·  ') +
+    (sqft ? `  ·  Sq ft adjustment applied (${sqft} sqft)` : '') +
+    '  ·  Prices are estimates and may vary based on final walkthrough.';
+
+  const addr = document.getElementById('est-addr').value.trim();
+  const contact = document.getElementById('est-contact').value.trim();
+  const notes = document.getElementById('est-notes').value.trim();
+  document.getElementById('q-summary-body').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px">
+      ${addr ? `<div><span style="color:var(--gray-500);font-size:11px;display:block;margin-bottom:2px">Address</span>${addr}</div>` : ''}
+      ${contact ? `<div><span style="color:var(--gray-500);font-size:11px;display:block;margin-bottom:2px">Contact</span>${contact}</div>` : ''}
+      <div><span style="color:var(--gray-500);font-size:11px;display:block;margin-bottom:2px">Rooms selected</span>${roomLines.length}</div>
+      <div><span style="color:var(--gray-500);font-size:11px;display:block;margin-bottom:2px">Add-ons</span>${addonLines.length || 'None'}</div>
+      ${notes ? `<div style="grid-column:1/-1"><span style="color:var(--gray-500);font-size:11px;display:block;margin-bottom:2px">Notes</span>${notes}</div>` : ''}
+    </div>`;
+}
+
+function resetEstimate() {
+  ['est-client','est-contact','est-addr','est-sqft','est-notes'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('est-quote-wrap').style.display = 'none';
+  updateEstRooms();
+}
+
+buildTasks();
+resizeCanvas();
+updateEstRooms();
+const estNow = new Date();
+const estDateEl = document.getElementById('est-date-display');
+if (estDateEl) estDateEl.textContent = estNow.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+// ── SERVICE WORKER & PWA ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+
+window.addEventListener('online',  () => document.getElementById('offline-banner').classList.remove('show'));
+window.addEventListener('offline', () => document.getElementById('offline-banner').classList.add('show'));
+if (!navigator.onLine) document.getElementById('offline-banner').classList.add('show');
+
+let deferredInstall = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstall = e;
+  if (!localStorage.getItem('installDismissed')) {
+    document.getElementById('install-banner').classList.add('show');
+  }
+});
+
+document.getElementById('install-btn').addEventListener('click', () => {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  deferredInstall.userChoice.then(() => {
+    deferredInstall = null;
+    document.getElementById('install-banner').classList.remove('show');
+  });
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-banner').classList.remove('show');
+});
+
+function dismissInstall() {
+  document.getElementById('install-banner').classList.remove('show');
+  localStorage.setItem('installDismissed', '1');
+}
+
+</body>
+</html>
